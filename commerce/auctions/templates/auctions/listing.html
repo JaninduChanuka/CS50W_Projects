@@ -1,0 +1,95 @@
+{% extends "auctions/layout.html" %}
+{% block body %}
+<div class="container">
+    {% if message %}
+    {% if update %}
+    <div class="alert alert-success" role="alert">{{ message }}</div>
+    {% else %}
+    <div class="alert alert-danger" role="alert">{{ message }}</div>
+    {% endif %}
+    {% endif %}
+    {% if not listing.isActive and user != listing.price.user %}
+    <div class="alert alert-success" role="alert">Congratulations! You Won the Auction.</div>
+    {% endif %}
+</div>
+
+<div class="container d-md-flex justify-content-md-end">
+    {% if user.is_authenticated and listing.isActive %}
+    {% if isOwner %}
+    <form action="{% url 'closeAuction' id=listing.id %}" method="POST">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger mx-3">Close Auction</button>
+    </form>
+    {% endif %}
+
+    {% if isListingInWatchList %}
+    <form action="{% url 'removeWatchList' id=listing.id %}" method="POST">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Remove From Watchlist</button>
+    </form>
+    {% else %}
+    <form action="{% url 'addWatchList' id=listing.id %}" method="POST">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-primary">Add To Watchlist</button>
+    </form>
+    {% endif %}
+    {% endif %}
+</div>
+
+<div class="container mb-5">
+    <h2 class="text-center mb-2"><strong>{{ listing.title }}</strong></h2>
+    <img class="rounded mx-auto d-block mb-3" height="400px" src="{{ listing.imageUrl }}" class="card-img-top"
+        alt="{{ listing.title }}" />
+    <p class="card-text">{{ listing.description }}</p>
+    <h4><strong>Price: $ </strong>{{ listing.price.bid }}</h4>
+    <p>Listed by: {{listing.owner }}</p>
+</div>
+<div class="container mb-5">
+    <form class="form-inline align-items-center" action="{% url 'placeBid' id=listing.id %}" method="POST">
+        {% csrf_token %}
+        <div class="form-group text-dark">
+            {% if user.is_authenticated %}
+            <h4 class="mb-1">Place a bid</h4>
+            <input class="form-control mx-2" type="number" min="0" name="newBid" placeholder="Enter New Bid" />
+            <button type="submit" class="btn btn-primary ">Place Bid</button>
+        </div>
+    </form>
+    {% endif %}
+</div>
+<div class="container text-dark">
+    <div class="w-100">
+        <div class="form-group mb-4">
+            <h3 class="mb-3">Comments</h3>
+            {% if user.is_authenticated %}
+            <form action="{% url 'addComment' id=listing.id %}" method="POST">
+                {% csrf_token %}
+                <input class="form-control" type="text" name="newComment" placeholder="Type your comment here..." />
+                <div class="d-flex justify-content-between mt-3">
+                    <button type="submit" class="btn btn-primary">ADD</i></button>
+                </div>
+            </form>
+        </div>
+        {% endif %}
+    </div>
+</div>
+<br>
+<div class="container">
+    <ul class="list-group">
+        {% for comment in allComments %}
+        <li class="list-group-item">
+            <div class="d-flex flex-start">
+                <img class="rounded-circle shadow-1-strong me-3"
+                    src="https://img.icons8.com/color/48/null/test-account.png" alt="avatar" width="40" height="40" />
+                <div class="w-100">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <h5 class="text-primary fw-bold"> {{ comment.author }} </h5>
+                        <p class="small text-muted">{{ comment.dateCreated }}</p>
+                    </div>
+                </div>
+            </div>
+            <h5 class="mx-5">{{ comment.message }}</h5>
+        </li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}
