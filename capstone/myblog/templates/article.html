@@ -1,0 +1,143 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}{{ post.title_tag }}{% endblock %}
+{% block content %}
+<div>
+    <h1>{{ post.title }}</h1>
+    <div class="d-flex justify-content-between">
+        <span class="fw-semibold">By : {{ post.author.first_name }} {{ post.author.last_name }}</span>
+        {% if user.is_authenticated %}
+        {% if user.id == post.author.id %}
+        <div><a class="fw-semibold" href="{% url 'update_post' post.pk %}">Edit</a>
+            <a class="fw-semibold mx-2" href="{% url 'delete_post' post.pk %}">Delete</a>
+            {% endif %}
+            {% endif %}
+            <span class="text-muted">{{ post.post_date }}</span>
+        </div>
+    </div>
+    <hr>
+    {% if post.header_image %}
+    <img class="rounded mx-auto d-block mb-4 w-50" src="{{ post.header_image.url }}">
+    {% endif %}
+    {{ post.body|safe }}
+    <hr>
+    {% if user.is_authenticated %}
+    <div class="like mt-3">
+        <img
+                data-id="{{ post.id }}"
+                id="post-like-{{ post.id }}"
+                class="liked"
+                {% if not request.user in post.like.all %}
+                data-is_liked="no"
+                src="https://img.icons8.com/fluency-systems-filled/35/null/hearts.png"
+                {% else %}
+                data-is_liked="yes"
+                src="https://img.icons8.com/fluency/35/null/hearts.png"
+                {% endif %}
+        />
+        <span id="post-count-{{ post.id }}">{{ post.like.count }}</span>
+    </div>
+    {% else %}
+    <small><a href="{% url 'login' %}">Login</a> to Like Post</small>
+    {% endif %}
+    <hr>
+    <h2>Comments</h2>
+    {% if not post.comments.all %}
+    No comments yet .. <a href="{% url 'add_comment' post.pk %}"> Add Comment </a>
+    <br>
+    {% else %}
+    <a href="{% url 'add_comment' post.pk %}">Add Comment</a>
+    <hr>
+    {% for comment in post.comments.all %}
+    <strong>
+        {{ comment.name}} - {{ comment.date_added }}
+    </strong>
+    <br>
+    {{ comment.body }}
+    <hr>
+    {% endfor %}
+    {% endif %}
+    <br>
+    <div class="card mb-3">
+        <div class="row g-0">
+            <div class="col-md-2">
+                {% if post.author.profile.profile_pic %}
+                <img class="img-fluid rounded-start mx-2 my-2" style="height: 200px;"
+                     src="{{ post.author.profile.profile_pic.url }}">
+                {% else %}
+                <img class="img-fluid rounded-start my-2 mx-2" style="height: 200px;"
+                     src="{% static 'myblog/images/default-profile-pic.png'%}">
+                {% endif %}
+            </div>
+            <div class="col-md-10">
+                <div class="card-body">
+                    <h5 class="card-title">{{ post.author.first_name }} {{ post.author.last_name }}</h5>
+                    <p class="card-text"><small class="text-muted">
+                        {% if post.author.profile.id %}
+                        <a href="{% url 'show_profile_page' post.author.profile.id %}">Profile Page</i></a>
+                        {% endif %}
+                        {% if post.author.profile.website_url %}
+                        <a href="{{ post.author.profile.website_url }}"><i class="fa-solid fa-globe mx-2"></i></a>
+                        {% endif %}
+                        {% if post.author.profile.facebook_url %}
+                        <a href="{{ post.author.profile.facebook_url }}"><i class="fa-brands fa-facebook mx-2"></i></a>
+                        {% endif %}
+                        {% if post.author.profile.twitter_url %}
+                        <a href="{{ post.author.profile.twitter_url }}"><i
+                                class="fa-brands fa-twitter mx-2"></i></a>
+                        {% endif %}
+                        {% if post.author.profile.instagram_url %}
+                        <a href="{{ post.author.profile.instagram_url }}"><i
+                                class="fa-brands fa-instagram mx-2"></i></a>
+                        {% endif %}
+                    </small>
+                    </p>
+                    <p class="card-text">{{ post.author.profile.bio }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br>
+    <br>
+
+    <script>
+        like = document.querySelectorAll(".liked");
+        edit = document.querySelectorAll(".edit");
+        text_area = document.querySelectorAll(".textarea");
+
+        like.forEach((element) => {
+            like_handeler(element);
+        });
+
+        function like_handeler(element) {
+            element.addEventListener("click", () => {
+                id = element.getAttribute("data-id");
+                is_liked = element.getAttribute("data-is_liked");
+                icon = document.querySelector(`#post-like-${id}`);
+                count = document.querySelector(`#post-count-${id}`);
+
+                form = new FormData();
+                form.append("id", id);
+                form.append("is_liked", is_liked);
+                fetch("/like/", {
+                    method: "POST",
+                    body: form,
+                })
+                    .then((res) => res.json())
+                    .then((res) => {
+                        if (res.status == 201) {
+                            if (res.is_liked === "yes") {
+                                icon.src = "https://img.icons8.com/fluency/35/null/hearts.png";
+                                element.setAttribute("data-is_liked", "yes");
+                            } else {
+                                icon.src = "https://img.icons8.com/fluency-systems-filled/35/null/hearts.png";
+                                element.setAttribute("data-is_liked", "no");
+                            }
+                            count.textContent = res.like_count;
+                        }
+                    })
+            });
+        }
+    </script>
+    {% endblock %}
+</div>

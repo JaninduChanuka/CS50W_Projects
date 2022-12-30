@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>All Posts</h1>
+<br>
+<ul class="list-group">
+    {% for post in object_list %}
+    <div class="card mb-2">
+        <div class="card-body ">
+            <a class="card-title fw-bold fs-3 text-primary" href="{% url 'article' post.pk %}">{{ post.title }}</a>
+            <a href="{% url 'category' post.category|slugify %}"><span
+                    class="mx-4 badge bg-dark text-wrap fs-6 fw-light">{{ post.category|title }}</span></a>
+            <span class="card-subtitle mx-2 text-muted d-flex justify-content-end">{{ post.post_date }}</span>
+            <p class="card-text fw-semibold ">{{ post.snippet }}</p>
+            <span>By : {{ post.author.first_name }} {{ post.author.last_name }} </span> <br>
+            {% if user.is_authenticated %}
+            {% if user.id == post.author.id %}
+            <a class="fw-semibold" href="{% url 'update_post' post.pk %}">Edit</a>
+            <a class="fw-semibold mx-2" href="{% url 'delete_post' post.pk %}">Delete</a>
+            {% endif %}
+            {% endif %}
+        </div>
+    </div>
+    <!--    <li class="list-group-item"><a href="{% url 'article' post.pk %}">{{ post.title }}</a>-->
+    <!--        - <a href="{% url 'category' post.category|slugify %}">{{ post.category|title }}</a>-->
+    <!--        - {{ post.author.first_name }}-->
+    <!--        {{ post.author.last_name }} - -->
+    <!--        {{ post.post_date }}-->
+    <!--        {% if user.is_authenticated %}-->
+    <!--        {% if user.id == post.author.id %}-->
+    <!--        - <small><a href="{% url 'update_post' post.pk %}">(Edit)</a></small>-->
+    <!--        <small><a href="{% url 'delete_post' post.pk %}">(Delete)</a></small>-->
+    <!--        {% endif %}-->
+    <!--        {% endif %}-->
+    <!--        <br>-->
+    <!--        {{ post.snippet }}-->
+    <!--    </li>-->
+    <!--    <br>-->
+    {% endfor %}
+</ul>
+
+{% endblock %}
+

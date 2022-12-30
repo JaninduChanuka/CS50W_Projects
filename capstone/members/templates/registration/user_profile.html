@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<!--<h1>Profile</h1>-->
+<section class="h-100 gradient-custom-2">
+    <div class="container py-5 h-100">
+        <div class="row d-flex justify-content-center align-items-center h-100">
+            <div class="col col-lg-9 col-xl-7">
+                <div class="card">
+                    <div class="rounded-top text-white d-flex flex-row bg-dark" style="height:200px;">
+                        <div class="ms-4 mt-5 d-flex flex-column mx-4" style="width: 150px;">
+                            {% if page_user.profile_pic %}
+                            <img class="img-fluid img-thumbnail mt-4 mb-2"
+                                 style="width: 150px; z-index: 1" src="{{ page_user.profile_pic.url }}">
+                            {% else %}
+                            <img class="img-fluid img-thumbnail mt-4 mb-2"
+                                 style="width: 150px; z-index: 1"
+                                 src="{% static 'myblog/images/default-profile-pic.png'%}">
+                            {% endif %}
+                        </div>
+                        <div class="ms-3" style="margin-top: 130px;">
+                            <h4>{{ page_user.user.first_name }} {{ page_user.user.last_name }}</h4>
+                        </div>
+                    </div>
+                    <div class="p-4 text-black">
+                        <div class="d-flex justify-content-end text-center py-1">
+                            <div class="px-3">
+                                {% if page_user.website_url %}
+                                <a href="{{ page_user.website_url }}"><i
+                                        class="text-dark fs-3 fa-solid fa-globe mx-2"></i></a>
+                                {% endif %}
+                            </div>
+                            <div class="px-3">
+                                {% if page_user.facebook_url %}
+                                <a href="{{ page_user.facebook_url }}"><i
+                                        class="text-dark fs-3 fa-brands fa-facebook mx-2"></i></a>
+                                {% endif %}
+                            </div>
+                            <div class="px-3">
+                                {% if page_user.twitter_url %}
+                                <a href="{{ page_user.twitter_url }}"><i
+                                        class=" text-dark fs-3 fa-brands fa-twitter mx-2"></i></a>
+                                {% endif %}
+                            </div>
+                            <div class="px-3">
+                                {% if page_user.instagram_url %}
+                                <a href="{{ page_user.instagram_url }}"><i
+                                        class=" text-dark fs-3 fa-brands fa-instagram mx-2"></i></a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-4">
+                        <div class="my-4">
+                            <p class="fw-semibold fs-4">About</p>
+                            <div>
+                                <p class="card-text">{{ page_user.bio }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+</section>
+{% endblock %}
+
