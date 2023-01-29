@@ -1,24 +1,36 @@
 {% extends 'base.html' %}
+{%load static%}
 {% block title %}LOGIN{% endblock %}
 {% block content %}
-<h1>Login</h1>
-<br>
-<div class="form-group">
-    <form method="post">
-        {% csrf_token %}
-        <div class="mb-3">
-            <label class="form-label">Username</label>
-            <input class="form-control" name="username" type="Text">
+<br><br><br><br>
+<div class="d-flex justify-content-center">
+    <div class="col-md-6">
+        <div class="bg-image shadow-2-strong rounded"
+            style="background-image: url('{% static 'myblog/images/login-background.jpg'%}')">
+            <div class="mask rounded" style="background-color: rgba(0, 0, 0, 0.7)">
+                <div class="d-flex justify-content-center">
+                    <div class="form-group col-md-8 fw-semibold text-light">
+                        <form method="post">
+                            <br>
+                            <h1 class="d-flex justify-content-center mb-4">LOGIN</h1>
+                            {% csrf_token %}
+                            <div class="mb-5">
+                                <label class="form-label">Username</label>
+                                <input class="form-control" name="username" type="Text">
+                            </div>
+                            <div class="mb-5">
+                                <label class="form-label">Password</label>
+                                <input class="form-control" name="password" type="password">
+                            </div>
+                            <div class="d-flex justify-content-center mb-4">
+                                <button class="btn btn-primary fs-5">Login</button>
+                            </div>
+                        </form>
+                        <div class="form-text d-flex justify-content-center mb-4">Not Registered ?<a href="{% url 'register' %}" class="badge bg-light text-wrap text-primary mx-2 text-decoration-none fw-bold"> Sign Up</a></div>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="mb-3">
-            <label class="form-label">Password</label>
-            <input class="form-control" name="password" type="password">
-        </div>
-        <button class="btn btn-primary">Login</button>
-    </form>
-    <br>
-    <div class="form-text">Not Registered ? <a href="{% url 'register' %}">Sign Up</a></div>
+    </div>
 </div>
-
 {% endblock %}
-

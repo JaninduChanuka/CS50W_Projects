@@ -1,15 +1,25 @@
 {% extends 'base.html' %}
+{%load static%}
 {% block title %}Edit Settings{% endblock %}
 {% block content %}
-<h1>Edit Settings</h1>
-<br>
-<div class="form-group">
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button class="btn btn-primary">Update</button>
-    </form>
+<div class="d-flex justify-content-center">
+    <div class="col-md-8">
+        <div class="bg-image shadow-2-strong rounded" style="background-image: url('{% static 'myblog/images/form-background.jpg'%}')">
+            <div class="mask rounded" style="background-color: rgba(0, 0, 0, 0.6)">
+                <div class="d-flex justify-content-center">
+                    <div class="form-group fw-semibold text-light col-md-8">
+                        <form method="post">
+                            <br>
+                            <h1 class="d-flex justify-content-center mb-4">Edit Settings</h1>
+                            {% csrf_token %}
+                            {{ form.as_p }}
+                            <button class="btn btn-primary mb-4">Update</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
-{% endblock %}
-
+    {% endblock %}
